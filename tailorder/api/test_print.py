@@ -134,9 +134,9 @@ def print_receipt():
             draw.text(x=5,y=y_value,body=i['item_name'][(int(quotient)*25): len(i['item_name'])])
             if i['translation_text']:
                 y_value = y_value + 35
-                #textReshaped = arabic_reshaper.reshape(i['translation_text'])
-                #textDisplay = get_display(textReshaped)
-                translation_text = "(" + i['translation_text'] + ")"
+                textReshaped = arabic_reshaper.reshape(i['translation_text'])
+                textDisplay = get_display(textReshaped)
+                translation_text = "(" + textDisplay + ")"
 
                 draw.text(x=5,y=y_value,body=translation_text)
 
@@ -145,9 +145,9 @@ def print_receipt():
             draw.text(x=5,y=y_value,body=i['item_name'] )
             if i['translation_text']:
                 y_value = y_value + 35
-                #textReshaped = arabic_reshaper.reshape(i['translation_text'])
-                #textDisplay = get_display(textReshaped)
-                translation_text = "(" + i['translation_text'] + ")"
+                textReshaped = arabic_reshaper.reshape(i['translation_text'])
+                textDisplay = get_display(textReshaped)
+                translation_text = "(" +textDisplay + ")"
                 draw.text(x=5,y=y_value,body= translation_text)
 
 
@@ -156,7 +156,9 @@ def print_receipt():
     y_value = y_value + 35
 
     #SUBTOTAL
-    draw.text(x=5,y=y_value + 35,body="Subtotal(المبلغ الاجمالي)")
+    textReshaped = arabic_reshaper.reshape("المبلغ الاجمالي")
+    textDisplaySubtotal = get_display(textReshaped)
+    draw.text(x=5,y=y_value + 35,body="Subtotal("+ textDisplaySubtotal+ ")")
     draw.gravity = "north_east"
     draw.text(x=5,y=y_value + 5,body=for_printing['subtotal'])
     draw.gravity = "forget"
@@ -164,8 +166,9 @@ def print_receipt():
     y_value = y_value + 35
 
     #DISCOUNT
-
-    draw.text(x=5,y=y_value + 35,body="Discount(الخصم)")
+    textReshaped = arabic_reshaper.reshape("الخصم")
+    textDisplayDiscount = get_display(textReshaped)
+    draw.text(x=5,y=y_value + 35,body="Discount(" + textDisplayDiscount+ ")")
     draw.gravity = "north_east"
     draw.text(x=5,y=y_value + 5,body=for_printing['discount'])
     draw.gravity = "forget"
@@ -193,9 +196,9 @@ def print_receipt():
         type = ii['type']
 
         if ii['translation_text']:
-            #textReshaped = arabic_reshaper.reshape(ii['translation_text'])
-            #textDisplay = get_display(textReshaped)
-            type += "(" + ii['translation_text'] + ")"
+            textReshaped = arabic_reshaper.reshape(ii['translation_text'])
+            textDisplay = get_display(textReshaped)
+            type += "(" + textDisplay + ")"
 
         draw.text(x=5,y=y_value,body=type)
         draw.gravity = "north_east"
@@ -205,15 +208,17 @@ def print_receipt():
 
 
     #TOTAL AMOUNT
-
-    draw.text(x=5,y=y_value + 35,body="Total Amount(المبلغ الاجمالي)")
+    textReshaped = arabic_reshaper.reshape("المبلغ الاجمالي")
+    textDisplayTA = get_display(textReshaped)
+    draw.text(x=5,y=y_value + 35,body="Total Amount(" + textDisplayTA + ")")
     draw.gravity = "north_east"
     draw.text(x=5,y=y_value + 5,body=str(format(float(for_printing['total_amount']), '.2f')))
     draw.gravity = "forget"
 
     #CHANGE
-
-    draw.text(x=5,y=y_value + 70,body="Change(الباقي)")
+    textReshaped = arabic_reshaper.reshape("الباقي")
+    textDisplayChange = get_display(textReshaped)
+    draw.text(x=5,y=y_value + 70,body="Change(" + textDisplayChange+")")
     draw.gravity = "north_east"
     draw.text(x=5,y=y_value + 43,body=str(format(float(for_printing['change']), '.2f')))
     draw.gravity = "forget"
