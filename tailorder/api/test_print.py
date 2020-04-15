@@ -11,63 +11,12 @@ from wand.drawing import Drawing as wDrawing
 from wand.color import Color as wColor
 from flask.json import loads
 
-@api.route('/print_bill', methods=['POST'])
-def print_bill():
-    print("asdad")
-    receipt_from_tailpos = loads(request.get_data(as_text=True))
-    for_printing = receipt_from_tailpos['data']
-
-    print(for_printing)
-
-    #print(loads(for_receipt['data']['mop'])[0]['translation_text'])
-    #reshaped_text = arabic_reshaper.reshape(loads(for_receipt['data']['mop'])[0]['translation_text'])
-    #rev_text = reshaped_text[::-1]  # slice backwards
-
-    # Some variable
-    port_serial = "/dev/rfcomm4"
-
-    bluetoothSerial = serial.Serial(port_serial, baudrate=115200, timeout=1)
-    print(bluetoothSerial)
-    fontPath = "/usr/share/fonts/opentype/fonts-hosny-thabit/Thabit.ttf"
-
-    tmpImage = 'test1.png'
-    printWidth = 250
-
-    # Get the characters in order
-    textReshaped = arabic_reshaper.reshape(for_printing['company'])
-    textDisplay = get_display(textReshaped)
-
-    # PIL can't do this correctly, need to use 'wand'.
-    # Based on
-    # https://stackoverflow.com/questions/5732408/printing-bidi-text-to-an-image
-
-    im = wImage(width=printWidth, height=36, background=wColor('#ffffff'))
-
-    draw = wDrawing()
-    draw.text_alignment = 'center';
-    draw.text_antialias = False
-    draw.text_encoding = 'utf-8'
-    draw.text_kerning = 0.0
-    draw.font = fontPath
-    draw.font_size = 36
-    draw.text(printWidth, 22, textDisplay)
-    draw(im)
-    im.save(filename=tmpImage)
-
-    # Print an image with your printer library
-    printertest = printer.File(port_serial)
-    printertest.set(align="right")
-    printertest.image(tmpImage)
-    printertest.cut()
-    print("SAMOKA GYUD Oi")
-    bluetoothSerial.close()
-    return {}
-
 @api.route('/print_receipt', methods=['POST'])
 def print_receipt():
 
     receipt_from_tailpos = loads(request.get_data(as_text=True))
     for_printing = receipt_from_tailpos['data']
+    type_of_printing = receipt_from_tailpos['type']
     print(for_printing)
 
     port_serial = "/dev/rfcomm0"
@@ -188,23 +137,24 @@ def print_receipt():
 
     if len(for_printing['taxesvalues']) == 0:
         y_value = y_value + 35
+
     #MODE OF PAYMENT
-    for idx, ii in enumerate(loads(for_printing['mop'])):
-        if idx != 0:
-            height += 35
-        y_value = y_value + 35
-        type = ii['type']
+    if type_of_printing != "Bill":
+        for idx, ii in enumerate(loads(for_printing['mop'])):
+            if idx != 0:
+                height += 35
+            y_value = y_value + 35
+            type = ii['type']
 
-        if ii['translation_text']:
-            textReshaped = arabic_reshaper.reshape(ii['translation_text'])
-            textDisplay = get_display(textReshaped)
-            type += "(" + textDisplay + ")"
+            if ii['translation_text']:
+                textReshaped = arabic_reshaper.reshape(ii['translation_text'])
+                textDisplay = get_display(textReshaped)
+                type += "(" + textDisplay + ")"
 
-        draw.text(x=5,y=y_value,body=type)
-        draw.gravity = "north_east"
-        draw.text(x=5,y=y_value - 25,body=str(format(float(ii['amount']), '.2f')))
-        draw.gravity = "forget"
-
+            draw.text(x=5,y=y_value,body=type)
+            draw.gravity = "north_east"
+            draw.text(x=5,y=y_value - 25,body=str(format(float(ii['amount']), '.2f')))
+            draw.gravity = "forget"
 
 
     #TOTAL AMOUNT
@@ -216,24 +166,25 @@ def print_receipt():
     draw.gravity = "forget"
 
     #CHANGE
-    textReshaped = arabic_reshaper.reshape("الباقي")
-    textDisplayChange = get_display(textReshaped)
-    draw.text(x=5,y=y_value + 70,body="Change(" + textDisplayChange+")")
-    draw.gravity = "north_east"
-    draw.text(x=5,y=y_value + 43,body=str(format(float(for_printing['change']), '.2f')))
-    draw.gravity = "forget"
+    if type_of_printing != "Bill":
+        textReshaped = arabic_reshaper.reshape("الباقي")
+        textDisplayChange = get_display(textReshaped)
+        draw.text(x=5,y=y_value + 70,body="Change(" + textDisplayChange+")")
+        draw.gravity = "north_east"
+        draw.text(x=5,y=y_value + 43,body=str(format(float(for_printing['change']), '.2f')))
+        draw.gravity = "forget"
 
-    draw.text(x=5,y=y_value+105,body="=====================================")
+        draw.text(x=5,y=y_value+105,body="=====================================")
 
     #FOOTER ==========
 
     if for_printing['footer']:
-        header_value = y_value+105
+        footer_value = y_value+105
         for x in for_printing['footer'].split("\n"):
             y_value = y_value + 35
-            header_value = header_value + 25
+            footer_value = footer_value + 25
             draw.text_alignment = "center"
-            draw.text(x=180,y=header_value,body=x)
+            draw.text(x=300,y=footer_value,body=x)
 
     im = wImage(width=printWidth, height=height, background=wColor('#ffffff'))
     draw(im)
