@@ -10,7 +10,8 @@ from wand.image import Image as wImage
 from wand.drawing import Drawing as wDrawing
 from wand.color import Color as wColor
 from flask.json import loads
-
+from PIL import Image
+import PIL
 @api.route('/print_receipt', methods=['POST'])
 def print_receipt():
 
@@ -34,24 +35,27 @@ def print_receipt():
 
     #COMPANY ==============
     draw.font_size = 34
+    y_value = 30
+    draw.text(x=180,y=y_value,body=for_printing['company'])
 
-    draw.text(x=180,y=75,body=for_printing['company'])
-
+    y_value = y_value + 35
 
     #DATE ==================
     split_date = for_printing['date'].split()
     draw.font_size = 26
-    draw.text(x=5,y=110,body=split_date[0])
-    draw.text(x=260,y=110,body=split_date[1])
+    draw.text(x=5,y=y_value,body=split_date[0])
+    draw.text(x=260,y=y_value,body=split_date[1])
+
+    y_value = y_value + 35
 
     #ORDER TYPE ==============
     draw.font_size = 26
-    draw.text(x=5,y=145,body="Order Type: " +  for_printing['ordertype'])
-    y_value = 145
+    draw.text(x=5,y=y_value,body="Order Type: " +  for_printing['ordertype'])
+
     #HEADER ==========
 
     if for_printing['header']:
-        header_value = 160
+        header_value = y_value + 15
         for x in for_printing['header'].split("\n"):
             y_value = y_value + 35
             header_value = header_value + 25
@@ -188,14 +192,24 @@ def print_receipt():
 
     im = wImage(width=printWidth, height=height, background=wColor('#ffffff'))
     draw(im)
-
     im.save(filename=tmpImage)
+
+    basewidth = 385
+    baseheight = 222
+
+    img = Image.open('testLogo.png')
+    wpercent = (basewidth / float(img.size[0]))
+    img = img.resize((basewidth, 350), PIL.Image.ANTIALIAS)
+    img.save('testLogo.png')
 
     # Print an image with your printer library
     printertest = printer.File(port_serial)
     printertest.set(align="left")
+    printertest.image('testLogo.png')
     printertest.image(tmpImage)
     printertest.cut()
+
+
     print("SAMOKA GYUD Oi")
     bluetoothSerial.close()
     return {}
