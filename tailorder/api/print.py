@@ -221,22 +221,22 @@ def print_receipt():
     #FOOTER ==========
 
     if for_printing['footer']:
+        draw.text_alignment = "center"
         footer_value = y_value+105
         footer_array = for_printing['footer'].split("\n")
-        print(footer_array)
         footer_array_translation = for_printing['footerTranslation'].split("\n")
         for xx in range(0,len(footer_array)):
-            translation = ""
+
             if footer_array[xx]:
-                height += 35
+                height += 25
+                translation = ""
                 if xx < len(footer_array_translation) and footer_array_translation[xx]:
                     textReshaped = arabic_reshaper.reshape(footer_array_translation[xx])
                     translation = get_display(textReshaped)
-                y_value = y_value + 35
+                y_value = y_value + 40
                 footer_value = footer_value + 25
-                draw.text_alignment = "center"
                 draw.text(x=300,y=footer_value,body=footer_array[xx] + translation)
-    height += 35
+
     im = wImage(width=printWidth, height=height, background=wColor('#ffffff'))
     draw(im)
     im.save(filename=tmpImage)
