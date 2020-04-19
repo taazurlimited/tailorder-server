@@ -38,11 +38,16 @@ def print_receipt():
     draw.font = fontPath
 
     #COMPANY ==============
+    company_translation = ""
+    if for_printing['companyTranslation']:
+        textReshaped = arabic_reshaper.reshape(for_printing['companyTranslation'])
+        company_translation = get_display(textReshaped)
     draw.font_size = 34
     y_value = 30
     draw.text(x=180,y=y_value,body=for_printing['company'])
+    draw.text(x=180,y=y_value + 35,body=company_translation)
 
-    y_value = y_value + 35
+    y_value = y_value + 70
 
     #DATE ==================
     split_date = for_printing['date'].split()
@@ -57,7 +62,6 @@ def print_receipt():
     draw.text(x=5,y=y_value,body="Order Type: " +  for_printing['ordertype'])
 
     #HEADER ==========
-
     if for_printing['header']:
         draw.text_alignment = "center"
         header_value = y_value + 15
