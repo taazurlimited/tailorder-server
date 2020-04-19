@@ -213,7 +213,7 @@ def print_receipt():
         textDisplayChange = get_display(textReshaped)
         draw.text(x=5,y=y_value + 70,body="Change" + textDisplayChange)
         draw.gravity = "north_east"
-        draw.text(x=5,y=y_value + 43,body=str(format(float(for_printing['change']), '.2f')))
+        draw.text(x=5,y=y_value + 45,body=str(format(float(for_printing['change']), '.2f')))
         draw.gravity = "forget"
 
     draw.text(x=5,y=y_value+105,body="=====================================")
