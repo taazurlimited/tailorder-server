@@ -12,20 +12,24 @@ from wand.color import Color as wColor
 from flask.json import loads
 from PIL import Image
 import PIL
+from pathlib import Path
+
 @api.route('/print_receipt', methods=['POST'])
 def print_receipt():
-
     receipt_from_tailpos = loads(request.get_data(as_text=True))
     for_printing = receipt_from_tailpos['data']
     type_of_printing = receipt_from_tailpos['type']
     print(for_printing)
 
     port_serial = "/dev/rfcomm0"
-
+    home = str(Path.home())
+    print(home)
     bluetoothSerial = serial.Serial(port_serial, baudrate=115200, timeout=1)
-    #fontPath = "/home/jiloysss/Documents/spiceco/aljazeera-font/FontAljazeeraColor-lzzD.ttf"
-    fontPath = "/home/pi/FontAljazeeraColor-lzzD.ttf"
-    tmpImage = 'receipt.png'
+    company_name = for_printing['company'].lower().replace(" ", "_")
+    print(company_name)
+    fontPath = home + "/tailorder-server/fonts/" + company_name + ".ttf"
+    print(fontPath)
+    tmpImage = 'print_images/receipt.png'
     #printWidth = 375
     printWidth = 570
 
@@ -133,8 +137,12 @@ def print_receipt():
             if idx != 0:
                 height += 35
             y_value = y_value + 35
+            tax_translation = ""
+            if iii['translation']:
+                textReshaped = arabic_reshaper.reshape(iii['translation'])
+                tax_translation = "(" + get_display(textReshaped) + ")"
 
-            draw.text(x=5,y=y_value,body=iii['name'])
+            draw.text(x=5,y=y_value,body=iii['name'] + tax_translation)
             draw.gravity = "north_east"
             draw.text(x=5,y=y_value - 25,body=str(format(round(float(iii['totalAmount']),2), '.2f')))
             draw.gravity = "forget"
@@ -196,22 +204,210 @@ def print_receipt():
 
     basewidth = 385
     baseheight = 222
-
-    img = Image.open('testLogo.png')
+    logo = "logos/" + company_name + ".png"
+    img = Image.open(logo)
     wpercent = (basewidth / float(img.size[0]))
     img = img.resize((basewidth, 350), PIL.Image.ANTIALIAS)
-    img.save('testLogo.png')
+    img.save(logo)
 
     # Print an image with your printer library
     printertest = printer.File(port_serial)
     printertest.set(align="left")
-    printertest.image('testLogo.png')
+    printertest.image(logo)
     printertest.image(tmpImage)
     printertest.cut()
 
-
-    print("SAMOKA GYUD Oi")
     bluetoothSerial.close()
+
     return {}
 
 
+@api.route('/print_report', methods=['POST'])
+def print_report():
+
+    receipt_from_tailpos = loads(request.get_data(as_text=True))
+    for_printing = receipt_from_tailpos['data']
+    type_of_printing = receipt_from_tailpos['type']
+    print(for_printing)
+
+    port_serial = "/dev/rfcomm0"
+    home = str(Path.home())
+    bluetoothSerial = serial.Serial(port_serial, baudrate=115200, timeout=1)
+    company_name = for_printing['company'].lower().replace(" ", "_")
+    print(company_name)
+    fontPath = home + "/tailorder-server/fonts/" + company_name + ".ttf"
+    print(fontPath)
+    tmpImage = 'print_images/report.png'
+    printWidth = 570
+
+    height = 600
+    draw = wDrawing()
+    draw.font = fontPath
+
+    #COMPANY ==============
+    draw.font_size = 34
+    y_value = 30
+    draw.text(x=180,y=y_value,body=for_printing['company'])
+    draw.font_size = 26
+
+    y_value = y_value + 35
+
+
+    draw.text(x=5,y=y_value ,body="=====================================")
+
+    y_value = y_value + 35
+
+    draw.text_alignment = "center"
+
+    draw.text(x=300,y=y_value ,body=for_printing['reportType'])
+
+    draw.text_alignment = "undefined"
+
+    y_value = y_value + 35
+
+    draw.text(x=5,y=y_value ,body="=====================================")
+
+    y_value = y_value + 35
+
+    draw.text(x=5,y=y_value ,body="Opened: " + for_printing['opened'])
+
+    y_value = y_value + 35
+
+    draw.text(x=5,y=y_value ,body="Opened: " + for_printing['closed'])
+
+    y_value = y_value + 35
+
+    draw.text(x=5,y=y_value ,body="=====================================")
+
+    y_value = y_value + 35
+    labels = [
+        "Opening Amount",
+        "Expected Drawer",
+        "Actual Money",
+        ]
+    for i in labels:
+        draw.text(x=5,y=y_value ,body=i)
+        draw.gravity ="north_east"
+        draw.text(x=5,y=y_value - 35 ,body=for_printing[i.lower().replace(" ","_")])
+        draw.gravity = "forget"
+        y_value = y_value + 35
+
+    draw.text(x=5,y=y_value ,body=for_printing['short_or_overage'])
+    draw.gravity ="north_east"
+    draw.text(x=5,y=y_value - 35 ,body=for_printing["short_or_overage_amount"])
+    draw.gravity = "forget"
+
+    y_value = y_value + 35
+
+    draw.text(x=5,y=y_value ,body="=====================================")
+
+    y_value = y_value + 35
+
+    labels = [
+        "Cash Sales",
+        "Total Net Sales",
+        "Total Net Sales with Vat",
+        "Payouts",
+        "Payins",
+
+        ]
+    for i in labels:
+        draw.text(x=5,y=y_value ,body=i)
+        draw.gravity ="north_east"
+        draw.text(x=5,y=y_value - 35 ,body=for_printing[i.lower().replace(" ","_")])
+        draw.gravity = "forget"
+        y_value = y_value + 35
+
+    if len(for_printing['total_taxes']) > 0:
+        for i in for_printing['total_taxes']:
+            height += 35
+            draw.text(x=5,y=y_value ,body=i['name'])
+            draw.gravity ="north_east"
+            draw.text(x=5,y=y_value - 35 ,body=str(i['totalAmount']))
+            draw.gravity = "forget"
+            y_value = y_value + 35
+
+
+    labels = [
+        "Discount",
+        "Cancelled",
+        "Voided",
+        "Transactions",
+        ]
+    for i in labels:
+        height += 35
+        draw.text(x=5,y=y_value ,body=i)
+        draw.gravity ="north_east"
+        draw.text(x=5,y=y_value - 35 ,body=for_printing[i.lower().replace(" ","_")])
+        draw.gravity = "forget"
+        y_value = y_value + 35
+    height += 35
+    draw.text(x=5,y=y_value ,body="=====================================")
+
+    y_value = y_value + 35
+    labels = [
+        "Dine in",
+        "Takeaway",
+        "Delivery",
+        "Online",
+        "Family",
+        ]
+    for i in labels:
+        if float(for_printing[i.lower().replace(" ","_")]) > 0:
+            height += 35
+            draw.text(x=5,y=y_value ,body=i)
+            draw.gravity ="north_east"
+            draw.text(x=5,y=y_value - 35 ,body=for_printing[i.lower().replace(" ","_")])
+            draw.gravity = "forget"
+            y_value = y_value + 35
+
+    if len(for_printing['categories_total_amounts']) > 0:
+        for i in for_printing['categories_total_amounts']:
+            height += 35
+            draw.text(x=5,y=y_value ,body=i['name'])
+            draw.gravity ="north_east"
+            draw.text(x=5,y=y_value - 35 ,body=str(format(float(i['total_amount']), '.2f')))
+            draw.gravity = "forget"
+            y_value = y_value + 35
+    else:
+        y_value = y_value + 35
+    height += 35
+    draw.text(x=5,y=y_value ,body="=====================================")
+    y_value = y_value + 35
+
+    if len(for_printing['mop_total_amounts']) > 0:
+        for i in for_printing['mop_total_amounts']:
+            height += 35
+            draw.text(x=5,y=y_value ,body=i['name'])
+            draw.gravity ="north_east"
+            draw.text(x=5,y=y_value - 35 ,body=str(format(float(i['total_amount']), '.2f')))
+            draw.gravity = "forget"
+            y_value = y_value + 35
+    if len(for_printing['mop_total_amounts']) > 0:
+        height += 35
+
+        draw.text(x=5,y=y_value ,body="=====================================")
+
+    im = wImage(width=printWidth, height=height, background=wColor('#ffffff'))
+    draw(im)
+    im.save(filename=tmpImage)
+
+
+    basewidth = 385
+    baseheight = 222
+    logo = "logos/" + company_name + ".png"
+    img = Image.open(logo)
+    wpercent = (basewidth / float(img.size[0]))
+    img = img.resize((basewidth, 350), PIL.Image.ANTIALIAS)
+    img.save(logo)
+
+    # Print an image with your printer library
+    printertest = printer.File(port_serial)
+    printertest.set(align="left")
+    printertest.image(logo)
+    printertest.image(tmpImage)
+    printertest.cut()
+
+    bluetoothSerial.close()
+
+    return {}
