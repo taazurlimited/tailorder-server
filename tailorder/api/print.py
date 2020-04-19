@@ -216,13 +216,11 @@ def print_receipt():
         draw.text(x=5,y=y_value + 43,body=str(format(float(for_printing['change']), '.2f')))
         draw.gravity = "forget"
 
-        draw.text(x=5,y=y_value+105,body="=====================================")
+    draw.text(x=5,y=y_value+105,body="=====================================")
 
     #FOOTER ==========
 
     if for_printing['footer']:
-        print("FOOTER")
-        print(for_printing['footer'])
         footer_value = y_value+105
         footer_array = for_printing['footer'].split("\n")
         print(footer_array)
@@ -230,6 +228,7 @@ def print_receipt():
         for xx in range(0,len(footer_array)):
             translation = ""
             if footer_array[xx]:
+                height += 35
                 if xx < len(footer_array_translation) and footer_array_translation[xx]:
                     textReshaped = arabic_reshaper.reshape(footer_array_translation[xx])
                     translation = get_display(textReshaped)
