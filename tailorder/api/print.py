@@ -80,7 +80,7 @@ def print_receipt():
         for x in range(0,len(header_array)):
             if header_array[x]:
                 translation = ""
-                if header_array_translation[x]:
+                if x < len(footer_array_translation) and  header_array_translation[x]:
                     textReshaped = arabic_reshaper.reshape(header_array_translation[x])
                     translation = get_display(textReshaped)
 
@@ -220,7 +220,7 @@ def print_receipt():
         for xx in range(0,len(footer_array)):
             if footer_array[xx]:
                 translation = ""
-                if footer_array_translation[xx]:
+                if xx < len(footer_array_translation) and footer_array_translation[xx]:
                     textReshaped = arabic_reshaper.reshape(footer_array_translation[xx])
                     translation = get_display(textReshaped)
             y_value = y_value + 35
