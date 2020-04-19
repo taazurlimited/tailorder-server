@@ -27,7 +27,7 @@ def print_receipt():
     bluetoothSerial = serial.Serial(port_serial, baudrate=115200, timeout=1)
     company_name = for_printing['company'].lower().replace(" ", "_")
     print(company_name)
-    fontPath = home + "/tailorder-server/fonts/" + company_name + ".ttf"
+    fontPath = home + "/Projects/tailorder-server/fonts/" + company_name + ".ttf"
     print(fontPath)
     tmpImage = 'print_images/receipt.png'
     #printWidth = 375
@@ -59,13 +59,31 @@ def print_receipt():
     #HEADER ==========
 
     if for_printing['header']:
+        draw.text_alignment = "center"
         header_value = y_value + 15
-        for x in for_printing['header'].split("\n"):
-            if x:
+        header_array = for_printing['header'].split("\n")
+        header_array_translation = for_printing['headerTranslation'].split("\n")
+        if type_of_printing == "Receipt" or type_of_printing == "Reprint":
+            y_value = y_value + 35
+            header_value = header_value + 25
+            draw.text(x=5,y=y_value,body="VAT No.: " +  for_printing['vat_number'])
+
+            y_value = y_value + 35
+            header_value = header_value + 25
+            draw.text(x=5,y=y_value,body="Ticket Number: " +  for_printing['ticket_number'])
+
+
+        for x in range(0,len(header_array)):
+            if header_array[x]:
+                translation = ""
+                if header_array_translation[x]:
+                    textReshaped = arabic_reshaper.reshape(header_array_translation[x])
+                    translation = get_display(textReshaped)
+
                 y_value = y_value + 35
                 header_value = header_value + 25
-                draw.text_alignment = "center"
-                draw.text(x=300,y=header_value,body=x)
+
+                draw.text(x=300,y=header_value,body=header_array[x] + translation)
 
     draw.text_alignment = "undefined"
 
@@ -193,27 +211,34 @@ def print_receipt():
 
     if for_printing['footer']:
         footer_value = y_value+105
-        for x in for_printing['footer'].split("\n"):
+        footer_array = for_printing['footer'].split("\n")
+        footer_array_translation = for_printing['footerTranslation'].split("\n")
+        for xx in range(0,len(footer_array)):
+            if footer_array[xx]:
+                translation = ""
+                if footer_array_translation[xx]:
+                    textReshaped = arabic_reshaper.reshape(footer_array_translation[xx])
+                    translation = get_display(textReshaped)
             y_value = y_value + 35
             footer_value = footer_value + 25
             draw.text_alignment = "center"
-            draw.text(x=300,y=footer_value,body=x)
+            draw.text(x=300,y=footer_value,body=footer_array[xx] + translation)
 
     im = wImage(width=printWidth, height=height, background=wColor('#ffffff'))
     draw(im)
     im.save(filename=tmpImage)
 
-    basewidth = 385
-    baseheight = 222
-    logo = "logos/" + company_name + ".png"
+    basewidth = 230
+    baseheight = 221
+    logo = "logos/logo.png"
     img = Image.open(logo)
     wpercent = (basewidth / float(img.size[0]))
-    img = img.resize((basewidth, 350), PIL.Image.ANTIALIAS)
+    img = img.resize((basewidth, baseheight), PIL.Image.ANTIALIAS)
     img.save(logo)
 
     # Print an image with your printer library
     printertest = printer.File(port_serial)
-    printertest.set(align="left")
+    printertest.set(align="right")
     printertest.image(logo)
     printertest.image(tmpImage)
     printertest.cut()
@@ -396,7 +421,7 @@ def print_report():
 
     basewidth = 385
     baseheight = 222
-    logo = "logos/" + company_name + ".png"
+    logo = "logos/logo.png"
     img = Image.open(logo)
     wpercent = (basewidth / float(img.size[0]))
     img = img.resize((basewidth, 350), PIL.Image.ANTIALIAS)
