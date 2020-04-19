@@ -73,6 +73,7 @@ class OrderItem(db.Model):
     parent = db.Column(db.Integer, db.ForeignKey('order.id'))
     item_name = db.Column(db.String)
     item_code = db.Column(db.String)
+    translation_text = db.Column(db.String)
     rate = db.Column(db.Float)
     tax = db.Column(db.String)
     category = db.Column(db.String)
@@ -81,12 +82,13 @@ class OrderItem(db.Model):
     is_done = db.Column(db.Boolean)
     is_new = db.Column(db.Boolean)
 
-    def __init__(self, item_name, item_code, qty, rate, tax, category, creation=None):
+    def __init__(self, item_name, item_code, qty, rate, tax, category,translation_text, creation=None):
         self.item_name = item_name
         self.item_code = item_code
         self.rate = rate
         self.tax = tax
         self.category = category
+        self.translation_text = translation_text
         self.qty = qty
         self.is_voided = False
         self.is_done = False
@@ -98,12 +100,13 @@ class OrderItem(db.Model):
     def from_json(json_dict, creation):
         item_name = json_dict.get('item_name')
         item_code = json_dict.get('item_code')
+        translation_text = json_dict.get('translation_text')
         rate = json_dict.get('rate')
         tax = json_dict.get('tax')
         category = json_dict.get('category')
         qty = json_dict.get('qty')
 
-        return OrderItem(item_name, item_code, qty, rate, tax,category, creation)
+        return OrderItem(item_name, item_code, qty, rate, tax,category,translation_text, creation)
 
     @staticmethod
     def list_from_json(items):
@@ -115,6 +118,7 @@ class OrderItem(db.Model):
         return OrderItem(
             item.item_name,
             item.item_code,
+            item.translation_text,
             item.qty,
             item.rate,
             item.tax,
@@ -130,6 +134,7 @@ class OrderItem(db.Model):
             'item_name': self.item_name,
             'item_code': self.item_code,
             'qty': self.qty,
+            'translation_text': self.translation_text,
             'rate': self.rate,
             'tax': self.tax,
             'category': self.category,
