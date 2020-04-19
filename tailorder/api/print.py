@@ -47,34 +47,15 @@ def print_receipt():
     draw.text(x=180,y=y_value,body=for_printing['company'])
     draw.text(x=180,y=y_value + 35,body=company_translation)
 
-    y_value = y_value + 70
-
-    #DATE ==================
-    split_date = for_printing['date'].split()
+    y_value = y_value + 45
     draw.font_size = 26
-    draw.text(x=5,y=y_value,body=split_date[0])
-    draw.text(x=260,y=y_value,body=split_date[1])
-
-    y_value = y_value + 35
-
-    #ORDER TYPE ==============
-    draw.font_size = 26
-    draw.text(x=5,y=y_value,body="Order Type: " +  for_printing['ordertype'])
 
     #HEADER ==========
     if for_printing['header']:
         draw.text_alignment = "center"
-        header_value = y_value + 15
+        header_value = y_value
         header_array = for_printing['header'].split("\n")
         header_array_translation = for_printing['headerTranslation'].split("\n")
-        y_value = y_value + 35
-        header_value = header_value + 25
-        draw.text(x=5,y=y_value,body="VAT No.: " +  for_printing['vat_number'])
-
-        y_value = y_value + 35
-        header_value = header_value + 25
-        draw.text(x=5,y=y_value,body="Ticket Number: " +  for_printing['ticket_number'])
-
 
         for x in range(0,len(header_array)):
             if header_array[x]:
@@ -83,12 +64,36 @@ def print_receipt():
                     textReshaped = arabic_reshaper.reshape(header_array_translation[x])
                     translation = get_display(textReshaped)
 
-                y_value = y_value + 35
+                y_value = y_value + 40
                 header_value = header_value + 25
 
                 draw.text(x=300,y=header_value,body=header_array[x] + translation)
 
     draw.text_alignment = "undefined"
+    if for_printing['vat_number']:
+        y_value = y_value + 35
+        header_value = header_value + 25
+        draw.text(x=5,y=y_value,body="VAT No.: 123456789012345")
+
+    if for_printing['ticket_number']:
+        header_value = header_value + 25
+        draw.text(x=330,y=y_value,body="Ticket Number: " +  for_printing['ticket_number'])
+
+    y_value = y_value + 35
+
+    #DATE ==================
+    split_date = for_printing['date'].split()
+    draw.font_size = 26
+    draw.text(x=5,y=y_value,body=split_date[0])
+    draw.gravity = "north_east"
+    draw.text(x=5,y=y_value - 20,body=split_date[1])
+    draw.gravity = "forget"
+
+    y_value = y_value + 35
+
+    #ORDER TYPE ==============
+    draw.font_size = 26
+    draw.text(x=5,y=y_value,body="Order Type: " +  for_printing['ordertype'])
 
     draw.text(x=5,y=y_value + 35 ,body="=====================================")
 
@@ -425,12 +430,12 @@ def print_report():
     im.save(filename=tmpImage)
 
 
-    basewidth = 385
-    baseheight = 222
+    basewidth = 230
+    baseheight = 221
     logo = "logos/logo.png"
     img = Image.open(logo)
     wpercent = (basewidth / float(img.size[0]))
-    img = img.resize((basewidth, 350), PIL.Image.ANTIALIAS)
+    img = img.resize((basewidth, baseheight), PIL.Image.ANTIALIAS)
     img.save(logo)
 
     # Print an image with your printer library
