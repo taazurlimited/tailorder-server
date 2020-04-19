@@ -215,7 +215,7 @@ def print_receipt():
         draw.gravity = "north_east"
         draw.text(x=5,y=y_value + 45,body=str(format(float(for_printing['change']), '.2f')))
         draw.gravity = "forget"
-
+    height += 40
     draw.text(x=5,y=y_value+105,body="=====================================")
 
     #FOOTER ==========
@@ -228,15 +228,15 @@ def print_receipt():
         for xx in range(0,len(footer_array)):
 
             if footer_array[xx]:
-                height += 25
+                height += 40
                 translation = ""
                 if xx < len(footer_array_translation) and footer_array_translation[xx]:
                     textReshaped = arabic_reshaper.reshape(footer_array_translation[xx])
                     translation = get_display(textReshaped)
-                y_value = y_value + 40
+
                 footer_value = footer_value + 25
                 draw.text(x=300,y=footer_value,body=footer_array[xx] + translation)
-    height += 50
+
     im = wImage(width=printWidth, height=height, background=wColor('#ffffff'))
     draw(im)
     im.save(filename=tmpImage)
