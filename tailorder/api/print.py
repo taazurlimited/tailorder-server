@@ -242,7 +242,7 @@ def print_receipt():
 
     # Print an image with your printer library
     printertest = printer.File(port_serial)
-    printertest.set(align="right")
+    printertest.set(align="center")
     printertest.image(logo)
     printertest.image(tmpImage)
     printertest.cut()
@@ -433,7 +433,7 @@ def print_report():
 
     # Print an image with your printer library
     printertest = printer.File(port_serial)
-    printertest.set(align="left")
+    printertest.set(align="center")
     printertest.image(logo)
     printertest.image(tmpImage)
     printertest.cut()
