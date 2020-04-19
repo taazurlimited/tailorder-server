@@ -73,7 +73,7 @@ def print_receipt():
     if for_printing['vat_number']:
         y_value = y_value + 35
         header_value = header_value + 25
-        draw.text(x=5,y=y_value,body="VAT No.: 123456789012345")
+        draw.text(x=5,y=y_value,body="VAT No.: " + for_printing['vat_number'])
 
     if for_printing['ticket_number']:
         header_value = header_value + 25
