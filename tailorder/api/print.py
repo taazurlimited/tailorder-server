@@ -61,10 +61,11 @@ def print_receipt():
     if for_printing['header']:
         header_value = y_value + 15
         for x in for_printing['header'].split("\n"):
-            y_value = y_value + 35
-            header_value = header_value + 25
-            draw.text_alignment = "center"
-            draw.text(x=300,y=header_value,body=x)
+            if x:
+                y_value = y_value + 35
+                header_value = header_value + 25
+                draw.text_alignment = "center"
+                draw.text(x=300,y=header_value,body=x)
 
     draw.text_alignment = "undefined"
 
