@@ -230,10 +230,10 @@ def print_receipt():
                 if xx < len(footer_array_translation) and footer_array_translation[xx]:
                     textReshaped = arabic_reshaper.reshape(footer_array_translation[xx])
                     translation = get_display(textReshaped)
-            y_value = y_value + 35
-            footer_value = footer_value + 25
-            draw.text_alignment = "center"
-            draw.text(x=300,y=footer_value,body=footer_array[xx] + translation)
+                y_value = y_value + 35
+                footer_value = footer_value + 25
+                draw.text_alignment = "center"
+                draw.text(x=300,y=footer_value,body=footer_array[xx] + translation)
 
     im = wImage(width=printWidth, height=height, background=wColor('#ffffff'))
     draw(im)
