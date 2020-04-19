@@ -198,6 +198,7 @@ def print_receipt():
 
 
     #TOTAL AMOUNT
+    height += 35
     textReshaped = arabic_reshaper.reshape("المبلغ الاجمالي")
     textDisplayTA = get_display(textReshaped)
     draw.text(x=5,y=y_value + 35,body="Total Amount(" + textDisplayTA + ")")
@@ -207,6 +208,7 @@ def print_receipt():
 
     #CHANGE
     if type_of_printing != "Bill":
+        height += 35
         textReshaped = arabic_reshaper.reshape("الباقي")
         textDisplayChange = get_display(textReshaped)
         draw.text(x=5,y=y_value + 70,body="Change(" + textDisplayChange+")")
@@ -235,7 +237,7 @@ def print_receipt():
                 footer_value = footer_value + 25
                 draw.text_alignment = "center"
                 draw.text(x=300,y=footer_value,body=footer_array[xx] + translation)
-
+    height += 35
     im = wImage(width=printWidth, height=height, background=wColor('#ffffff'))
     draw(im)
     im.save(filename=tmpImage)
