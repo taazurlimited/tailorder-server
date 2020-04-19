@@ -33,7 +33,7 @@ def print_receipt():
     #printWidth = 375
     printWidth = 570
 
-    height = 1200
+    height = 800
     draw = wDrawing()
     draw.font = fontPath
 
