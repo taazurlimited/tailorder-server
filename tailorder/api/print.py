@@ -67,14 +67,13 @@ def print_receipt():
         header_value = y_value + 15
         header_array = for_printing['header'].split("\n")
         header_array_translation = for_printing['headerTranslation'].split("\n")
-        if type_of_printing == "Receipt" or type_of_printing == "Reprint":
-            y_value = y_value + 35
-            header_value = header_value + 25
-            draw.text(x=5,y=y_value,body="VAT No.: " +  for_printing['vat_number'])
+        y_value = y_value + 35
+        header_value = header_value + 25
+        draw.text(x=5,y=y_value,body="VAT No.: " +  for_printing['vat_number'])
 
-            y_value = y_value + 35
-            header_value = header_value + 25
-            draw.text(x=5,y=y_value,body="Ticket Number: " +  for_printing['ticket_number'])
+        y_value = y_value + 35
+        header_value = header_value + 25
+        draw.text(x=5,y=y_value,body="Ticket Number: " +  for_printing['ticket_number'])
 
 
         for x in range(0,len(header_array)):
@@ -214,12 +213,15 @@ def print_receipt():
     #FOOTER ==========
 
     if for_printing['footer']:
+        print("FOOTER")
+        print(for_printing['footer'])
         footer_value = y_value+105
         footer_array = for_printing['footer'].split("\n")
+        print(footer_array)
         footer_array_translation = for_printing['footerTranslation'].split("\n")
         for xx in range(0,len(footer_array)):
+            translation = ""
             if footer_array[xx]:
-                translation = ""
                 if xx < len(footer_array_translation) and footer_array_translation[xx]:
                     textReshaped = arabic_reshaper.reshape(footer_array_translation[xx])
                     translation = get_display(textReshaped)
