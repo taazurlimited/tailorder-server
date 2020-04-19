@@ -166,6 +166,7 @@ def print_receipt():
             y_value = y_value + 35
             tax_translation = ""
             if iii['translation']:
+                height += 35
                 textReshaped = arabic_reshaper.reshape(iii['translation'])
                 tax_translation = "(" + get_display(textReshaped) + ")"
 
