@@ -27,7 +27,7 @@ def print_receipt():
     bluetoothSerial = serial.Serial(port_serial, baudrate=115200, timeout=1)
     company_name = for_printing['company'].lower().replace(" ", "_")
     print(company_name)
-    fontPath = home + "/Projects/tailorder-server/fonts/" + company_name + ".ttf"
+    fontPath = home + "/tailorder-server/fonts/" + company_name + ".ttf"
     print(fontPath)
     tmpImage = 'print_images/receipt.png'
     #printWidth = 375
