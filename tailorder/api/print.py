@@ -106,6 +106,8 @@ def print_receipt():
         draw.text(x=5,y=y_value + 10,body=format(float(i['qty'] * i['price']), '.2f'))
         draw.gravity = "forget"
 
+        draw.text(x=340,y=y_value + 35,body=str(i['qty']))
+
         if len(i['item_name']) > 25:
             quotient = len(i['item_name']) / 25
             for xxx in range(0,int(quotient)):
