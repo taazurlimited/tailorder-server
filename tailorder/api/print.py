@@ -128,8 +128,11 @@ def print_receipt():
 
         else:
             y_value = y_value + 35
+            if idx != 0:
+                height += 35
             draw.text(x=5,y=y_value,body=i['item_name'] )
             if i['translation_text']:
+                height += 35
                 y_value = y_value + 35
                 textReshaped = arabic_reshaper.reshape(i['translation_text'])
                 textDisplay = get_display(textReshaped)
@@ -228,7 +231,6 @@ def print_receipt():
         footer_array = for_printing['footer'].split("\n")
         footer_array_translation = for_printing['footerTranslation'].split("\n")
         for xx in range(0,len(footer_array)):
-
             if footer_array[xx]:
                 height += 40
                 translation = ""
