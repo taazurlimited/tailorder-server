@@ -16,14 +16,8 @@ def print_order():
     is_usb = get_config(current_app, 'USB')
     print_item_code = get_config(current_app, 'PRINT_ITEM_CODE')
 
+    write_order(order, None, print_item_code)
 
-    try:
-        if is_usb:
-            usb_printer = get_usb(get_usb_config(current_app))
-
-        write_order(order, usb_printer, print_item_code)
-    except:
-        print("No printing")
     for ii in order.items:
         print(ii.is_new)
         ii.is_new = False

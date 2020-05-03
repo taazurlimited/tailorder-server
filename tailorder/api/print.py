@@ -19,16 +19,12 @@ def print_receipt():
     receipt_from_tailpos = loads(request.get_data(as_text=True))
     for_printing = receipt_from_tailpos['data']
     type_of_printing = receipt_from_tailpos['type']
-    print(for_printing)
 
     port_serial = "/dev/rfcomm0"
     home = str(Path.home())
-    print(home)
     bluetoothSerial = serial.Serial(port_serial, baudrate=115200, timeout=1)
     company_name = for_printing['company'].lower().replace(" ", "_")
-    print(company_name)
     fontPath = home + "/tailorder-server/fonts/" + company_name + ".ttf"
-    print(fontPath)
     tmpImage = 'print_images/receipt.png'
     #printWidth = 375
     printWidth = 570
