@@ -81,7 +81,7 @@ def write_order(order, usb_printer=None, print_item_code=True):
     tmpImage = 'print_images/kitchen.png'
     printWidth = 570
 
-    height = 500
+    height = 450
     draw = wDrawing()
     draw.font = fontPath
 
