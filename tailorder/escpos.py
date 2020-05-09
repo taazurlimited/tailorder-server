@@ -128,7 +128,7 @@ def write_order(order, usb_printer=None, print_item_code=True):
             ])
             y_value = y_value + 35
             draw.text(x=5,y=y_value,body=str(item_code))
-    if "remarks" in order and order.remarks:
+    if order.remarks:
         y_value = y_value + 70
         draw.text(x=5,y=y_value,body="Remarks: ")
         draw.text(x=180,y=y_value,body=str(order.remarks))
