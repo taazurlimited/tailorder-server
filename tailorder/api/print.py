@@ -236,7 +236,6 @@ def print_receipt():
 
                 footer_value = footer_value + 25
                 draw.text(x=300,y=footer_value,body=footer_array[xx] + translation)
-    height += 70
 
     im = wImage(width=printWidth, height=height, background=wColor('#ffffff'))
     draw(im)
