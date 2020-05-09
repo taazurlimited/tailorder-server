@@ -72,7 +72,7 @@ def write_additional(table_no, lines, usb_printer=None, print_item_code=True):
 
 
 def write_order(order, usb_printer=None, print_item_code=True):
-    port_serial = "/dev/rfcomm0"
+    port_serial = "/dev/rfcomm1"
     home = str(Path.home())
     bluetoothSerial = serial.Serial(port_serial, baudrate=115200, timeout=1)
     company_name = "house_of_spices"
