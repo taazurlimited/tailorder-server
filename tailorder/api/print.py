@@ -158,6 +158,17 @@ def print_receipt():
     draw.text(x=5,y=y_value + 5,body=for_printing['discount'])
     draw.gravity = "forget"
 
+    if for_printing['loyalty'] > 0:
+        y_value = y_value + 35
+        #LOYALTY
+        textReshaped = arabic_reshaper.reshape("وفاء")
+        textDisplayDiscount = get_display(textReshaped)
+        draw.text(x=5,y=y_value + 35,body="Loyalty" + textDisplayDiscount)
+        draw.gravity = "north_east"
+        draw.text(x=5,y=y_value + 5,body=str(format(round(float(for_printing['loyalty']),2), '.2f')))
+        draw.gravity = "forget"
+        height += 35
+
     #TAXES VALUES
     if len(for_printing['taxesvalues']) > 0:
         y_value = y_value + 35
@@ -372,12 +383,13 @@ def print_report():
         "Cancelled",
         "Voided",
         "Transactions",
+        "Loyalty"
         ]
     for i in labels:
         height += 35
         draw.text(x=5,y=y_value ,body=i)
         draw.gravity ="north_east"
-        draw.text(x=5,y=y_value - 35 ,body=for_printing[i.lower().replace(" ","_")])
+        draw.text(x=5,y=y_value - 35 ,body=str(for_printing[i.lower().replace(" ","_")]))
         draw.gravity = "forget"
         y_value = y_value + 35
     height += 35
